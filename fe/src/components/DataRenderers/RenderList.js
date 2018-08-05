@@ -12,7 +12,7 @@ const RenderList = props => {
   }
   if (list.categories.length < 1 && list.items.length < 1)
     return (
-      <div className="container">
+      <div className="container-render">
         <p>
           Your search has no results. Probably, we will make this page looks
           better <Glyphicon glyph="search" />
@@ -22,7 +22,7 @@ const RenderList = props => {
 
   if (list.items.length < 1)
     return (
-      <div className="container">
+      <div className="container-render">
         <p>Looks like, there is no items</p>
       </div>
     )
