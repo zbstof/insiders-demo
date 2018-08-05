@@ -5,7 +5,7 @@ import {
   FormGroup, Glyphicon,
   HelpBlock, InputGroup
 } from 'react-bootstrap'
-import RenderList from './RenderList'
+import RenderList from '../DataRenderers/RenderList'
 
 class Search extends React.Component {
   constructor(params) {
