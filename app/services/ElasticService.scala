@@ -18,6 +18,7 @@ class ElasticService @Inject()(val ws: WSClient/*, val boostings: BoostingServic
 
   // we are using one mapping and data type per instance of app
   private val esDocRoot: String = "http://localhost:9200/data/_doc"
+  private val esMappingRoot: String = "http://localhost:9200/data/_mapping/_doc"
 
   def getSchema: Future[JsValue] = {
     ws.url(s"$esDocRoot/_mapping")
@@ -86,32 +87,36 @@ class ElasticService @Inject()(val ws: WSClient/*, val boostings: BoostingServic
   }
 
   def putPromotedListings(keywordsByIds: scala.collection.mutable.Map[Int, JsValue]): Unit = {
-    ws.url(s"$esDocRoot")
-      .withMethod(HttpVerbs.PUT)
-      .withBody(Json.parse(
-        s"""
-           |{
-           |  "properties": {
-           |    "promoted_listings": {
-           |      "type": "keyword"
-           |    }
-           |  }
-           |}
+    def addPromotedListingsESField = {
+      ws.url(esMappingRoot)
+        .withMethod(HttpVerbs.PUT)
+        .withBody(Json.parse(
+          s"""
+             |{
+             |  "properties": {
+             |    "promoted_listings": {
+             |      "type": "keyword"
+             |    }
+             |  }
+             |}
         """.stripMargin))
-      .execute()
-//
-//    for ((k, v) <- keywordsByIds) {
-//      ws.url(s"$esDocRoot/" + k)
-//        .withMethod(HttpVerbs.PUT)
-//        .withBody(Json.parse(
-//          s"""
-//             |{
-//             |  "promoted_listings": [$v]
-//             |}
-//        """.stripMargin))
-//        .execute()
-//    }
+        .execute()
+    }
 
-    print(keywordsByIds)
+    addPromotedListingsESField
+
+    for ((k, v) <- keywordsByIds) {
+      ws.url(s"$esDocRoot/" + k + "/_update")
+        .withMethod(HttpVerbs.POST)
+        .withBody(Json.parse(
+          s"""
+             |{
+             |  "doc": {
+             |    "promoted_listings": $v
+             |  }
+             |}
+        """.stripMargin))
+        .execute()
+    }
   }
 }
