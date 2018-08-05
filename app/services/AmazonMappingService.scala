@@ -37,7 +37,7 @@ class AmazonMappingService @Inject()(val elasticService: ElasticService)(implici
     }
     val ndjson = dataFeed.value
 //      .map(element => (element))
-      .foldLeft[String]("")((ndjson, entry) => ndjson + s"""{ "index" : { "_index" : "data", "_type" : "_doc", "_id" : "${entry \ "name"}" } }"""
+      .foldLeft[String]("")((ndjson, entry) => ndjson + s"""{ "index" : { "_index" : "data", "_type" : "_doc", "_id" : "${Json.stringify((entry \ "name") get)}" } }"""
       + "\n" +Json.stringify(entry) + "\n")
     elasticService.bulkUpload(ndjson).map(ignored =>
       elasticService.putPromotedListings(jsonArrayKeywordsById))
