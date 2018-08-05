@@ -5,16 +5,23 @@ import java.io.InputStream
 import javax.inject.{Inject, Singleton}
 import play.api.libs.json
 import play.api.libs.json._
+import play.api.libs.ws.WSResponse
 import services.Control.using
+
+import scala.concurrent.Future
 
 @Singleton
 class AmazonMappingService @Inject()(val elasticService: ElasticService) {
-  private val stream: InputStream = this.getClass.getResourceAsStream("/amazondata_Electronics_14200.txt")
-  private val dataFeed = using(scala.io.Source.fromInputStream(stream)) { source => {
-    toJson(source.mkString)
+
+  def importFeed: Future[WSResponse] =
+  {
+    val stream: InputStream = getClass.getResourceAsStream("/amazondata_Electronics_14200.txt")
+    val dataFeed = using(scala.io.Source.fromInputStream(stream)) { source => {
+      toJson(source.mkString)
+    }
+    }
+    elasticService.bulkUpload(dataFeed.value)
   }
-  }
-  elasticService.bulkUpload(dataFeed.value)
 
   def toJson(data: String, default: JsObject = JsObject.empty): JsArray = {
     val items = data.split("(\n\n)*ITEM ")

@@ -13,6 +13,10 @@ class DataController @Inject()(val cc: ControllerComponents,
                                val elastic: ElasticService,
                                val mappingService: AmazonMappingService)(implicit val ec: ExecutionContext) extends AbstractController(cc) {
 
+  def importFeed: Action[AnyContent] = Action.async {
+    mappingService.importFeed.map(elasticResponce => Status(elasticResponce.status))
+  }
+
   def search: Action[AnyContent] = Action.async { implicit request: Request[AnyContent] =>
     val queryPattern: String = request.getQueryString("pattern") match {
       case Some(pattern) => pattern
@@ -21,7 +25,7 @@ class DataController @Inject()(val cc: ControllerComponents,
     elastic.search(queryPattern)
       .map((res: WSResponse) => {
 
-        val categoriesBuckets: JsLookupResult = res.body[JsValue] \ "aggregations" \ "by_city" \ "buckets"
+        val categoriesBuckets: JsLookupResult = res.body[JsValue] \ "aggregations" \ "by_Binding" \ "buckets"
         val categories: IndexedSeq[JsObject] = categoriesBuckets.get
           .as[JsArray]
           .value
