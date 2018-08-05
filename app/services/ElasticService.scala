@@ -36,9 +36,8 @@ class ElasticService @Inject()(val ws: WSClient)(implicit val ec: ExecutionConte
   }
 
   def search(queryPattern: String): Future[WSResponse] = {
-        val groupingField = """Binding"""
-        var fields = Map("Title" -> 5, "Brand" -> 4, "Binding" -> 3, "Color" -> 1, "Feature" -> 1)
-//    var fields = Map("firstname" -> 5, "employer" -> 1)
+    val groupingField = """Binding"""
+    var fields = Map("Title" -> 5, "Brand" -> 4, "Binding" -> 3, "Color" -> 1, "Feature" -> 1)
       .map { case (k, v) => "\"" + k + "^" + v + "\"" }
       .mkString("[", ", ", "]")
 

@@ -12,9 +12,10 @@ import scala.concurrent.ExecutionContext
 class DataController @Inject()(val cc: ControllerComponents,
                                val elastic: ElasticService,
                                val mappingService: AmazonMappingService)(implicit val ec: ExecutionContext) extends AbstractController(cc) {
+  mappingService.importFeed
 
   def importFeed: Action[AnyContent] = Action.async {
-    mappingService.importFeed.map(elasticResponce => Status(elasticResponce.status))
+    mappingService.importFeed.map(ignored => Ok)
   }
 
   def search: Action[AnyContent] = Action.async { implicit request: Request[AnyContent] =>

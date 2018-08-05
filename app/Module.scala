@@ -1,9 +1,8 @@
 import com.google.inject.AbstractModule
-import services.{AmazonMappingService, BoostingService}
+import services.AmazonMappingService
 
 class Module extends AbstractModule {
 
   override def configure() = {
-    bind(classOf[BoostingService]).asEagerSingleton()
   }
 }

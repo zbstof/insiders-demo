@@ -5,23 +5,40 @@ import java.io.InputStream
 import javax.inject.{Inject, Singleton}
 import play.api.libs.json
 import play.api.libs.json._
-import play.api.libs.ws.WSResponse
 import services.Control.using
 
-import scala.concurrent.Future
+import scala.collection.mutable
+import scala.concurrent.ExecutionContext
+import scala.io.Source
 
 @Singleton
-class AmazonMappingService @Inject()(val elasticService: ElasticService) {
+class AmazonMappingService @Inject()(val elasticService: ElasticService)(implicit val ec: ExecutionContext) {
 
-  def importFeed: Future[WSResponse] =
-  {
+  private val boostingsFileName = "boostings.txt"
+  private var keywordsByIds = scala.collection.mutable.Map[Int, mutable.Set[String]]()
+
+  val linesIterator: Iterator[String] = Source.fromFile(boostingsFileName).getLines
+
+  for (l <- linesIterator) {
+    val keyValues: Array[String] = l.split("=")
+    val ids: Array[Int] = keyValues(1).split(",").map(_.trim.toInt)
+    val key: String = keyValues(0).trim
+
+    for (id <- ids) keywordsByIds.getOrElseUpdate(id, mutable.Set[String](key)) += key
+  }
+
+  private val jsonArrayKeywordsById: mutable.Map[Int, JsValue] = for ((k, v) <- keywordsByIds) yield (k, Json.toJson(v))
+
+  def importFeed = {
     val stream: InputStream = getClass.getResourceAsStream("/amazondata_Electronics_14200.txt")
     val dataFeed = using(scala.io.Source.fromInputStream(stream)) { source => {
       toJson(source.mkString)
     }
     }
-    elasticService.bulkUpload(dataFeed.value)
+    elasticService.bulkUpload(dataFeed.value).map(ignored =>
+      elasticService.putPromotedListings(jsonArrayKeywordsById))
   }
+
 
   def toJson(data: String, default: JsObject = JsObject.empty): JsArray = {
     val items = data.split("(\n\n)*ITEM ")
