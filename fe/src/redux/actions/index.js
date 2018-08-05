@@ -1,3 +1,1 @@
-import { searchAsync } from './searchAction'
-
-export { searchAsync }
+export { searchAsync } from './searchAction'

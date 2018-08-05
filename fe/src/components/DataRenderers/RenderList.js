@@ -2,7 +2,7 @@ import React from 'react'
 import { ListGroup } from 'react-bootstrap'
 import isNil from 'lodash/isNil'
 import { categoryListItem, regularListItem } from './Item'
-import {KEY} from "../../constants";
+import { onClick } from '../../localStorage'
 
 // FIXME: when data will change to actual, update parsing
 const RenderList = props => {
@@ -22,23 +22,11 @@ const RenderList = props => {
 
   return (
     <ListGroup id={'render-list'}>
-      {list.categories.map(e => categoryListItem(e, onClick))}
-      {list.items.map(e => regularListItem(e, onClick))}
+      {/* FIXME: need to clear send params */}
+      {list.categories.map(e => categoryListItem(e, onClick(e)))}
+      {list.items.map(e => regularListItem(e, onClick(e)))}
     </ListGroup>
   )
-}
-
-const onClick = e => {
-  // TODO: add hit counter
-  e.preventDefault()
-  let storage = []
-  if (JSON.parse(localStorage.getItem(KEY)) !== null) {
-    storage = JSON.parse(localStorage.getItem(KEY))
-  }
-  if (!isNil(e) && !isNil(e.target) && !isNil(e.target.innerText)) {
-    storage.push(e.target.innerText)
-  }
-  localStorage.setItem(KEY, JSON.stringify(storage))
 }
 
 export default RenderList
