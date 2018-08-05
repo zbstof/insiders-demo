@@ -1,12 +1,13 @@
 package services
 
-import javax.inject.Singleton
+import javax.inject.{Inject, Singleton}
+import play.api.libs.json.{JsArray, JsValue, Json}
 
 import scala.collection.mutable
 import scala.io.Source
 
 @Singleton
-class BoostingService {
+class BoostingService @Inject()(val elasticService: ElasticService) {
   private val boostingsFileName = "boostings.txt"
   private var keywordsByIds = scala.collection.mutable.Map[Int, mutable.Set[String]]()
 
@@ -21,5 +22,7 @@ class BoostingService {
 
     for (id <- ids) keywordsByIds.getOrElseUpdate(id, mutable.Set[String](key)) += key
   }
-  //promoted listings
+
+  private val jsonArrayKeywordsById: mutable.Map[Int, JsValue] = for ((k,v) <- keywordsByIds) yield (k, Json.toJson(v))
+  elasticService.putPromotedListings(jsonArrayKeywordsById)
 }

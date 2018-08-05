@@ -55,9 +55,9 @@ class DataController @Inject()(val cc: ControllerComponents,
     elastic.getSchema.map((res: JsValue) => Ok(res))
   }
 
-  def boostings: Action[AnyContent] = Action {
-    Ok(elastic.getBoostings)
-  }
+//  def boostings: Action[AnyContent] = Action {
+//    Ok(elastic.getBoostings)
+//  }
 
   def bulkUpload: Action[AnyContent] = Action.async { implicit request: Request[AnyContent] =>
     val body: AnyContent = request.body

@@ -10,10 +10,11 @@ import play.api.libs.json._
 import play.api.libs.ws.ahc.AhcCurlRequestLogger
 import play.api.libs.ws.{InMemoryBody, WSClient, WSResponse}
 
+import scala.collection.mutable
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class ElasticService @Inject()(val ws: WSClient, val boostings: BoostingService)(implicit val ec: ExecutionContext) {
+class ElasticService @Inject()(val ws: WSClient/*, val boostings: BoostingService*/)(implicit val ec: ExecutionContext) {
 
   // we are using one mapping and data type per instance of app
   private val esDocRoot: String = "http://localhost:9200/data/_doc"
@@ -25,9 +26,9 @@ class ElasticService @Inject()(val ws: WSClient, val boostings: BoostingService)
       .map(transformMappingToSimpleSchema)
   }
 
-  def getBoostings: JsValue = {
-    toJson(boostings.currentBoostings)
-  }
+//  def getBoostings: JsValue = {
+//    toJson(boostings.currentBoostings)
+//  }
 
   private def transformMappingToSimpleSchema(res: WSResponse) = {
     def getFieldType(value: JsValue): JsValue = (value \ "type").get.as[JsValue]
@@ -82,5 +83,35 @@ class ElasticService @Inject()(val ws: WSClient, val boostings: BoostingService)
         ndjson.stripMargin, StandardCharsets.UTF_8)))
       .withRequestFilter(AhcCurlRequestLogger())
       .execute()
+  }
+
+  def putPromotedListings(keywordsByIds: scala.collection.mutable.Map[Int, JsValue]): Unit = {
+    ws.url(s"$esDocRoot")
+      .withMethod(HttpVerbs.PUT)
+      .withBody(Json.parse(
+        s"""
+           |{
+           |  "properties": {
+           |    "promoted_listings": {
+           |      "type": "keyword"
+           |    }
+           |  }
+           |}
+        """.stripMargin))
+      .execute()
+//
+//    for ((k, v) <- keywordsByIds) {
+//      ws.url(s"$esDocRoot/" + k)
+//        .withMethod(HttpVerbs.PUT)
+//        .withBody(Json.parse(
+//          s"""
+//             |{
+//             |  "promoted_listings": [$v]
+//             |}
+//        """.stripMargin))
+//        .execute()
+//    }
+
+    print(keywordsByIds)
   }
 }
