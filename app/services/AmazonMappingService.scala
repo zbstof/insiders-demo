@@ -17,8 +17,8 @@ class AmazonMappingService @Inject()(val elasticService: ElasticService) {
   {
     val stream: InputStream = getClass.getResourceAsStream("/amazondata_Electronics_14200.txt")
     val dataFeed = using(scala.io.Source.fromInputStream(stream)) { source => {
-      toJson(source.mkString)
-    }
+        toJson(source.mkString)
+      }
     }
     elasticService.bulkUpload(dataFeed.value)
   }
