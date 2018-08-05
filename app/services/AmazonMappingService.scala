@@ -35,7 +35,11 @@ class AmazonMappingService @Inject()(val elasticService: ElasticService)(implici
         toJson(source.mkString)
       }
     }
-    elasticService.bulkUpload(dataFeed.value).map(ignored =>
+    val ndjson = dataFeed.value
+//      .map(element => (element))
+      .foldLeft[String]("")((ndjson, entry) => ndjson + s"""{ "index" : { "_index" : "data", "_type" : "_doc", "_id" : "${entry \ "name"}" } }"""
+      + "\n" +Json.stringify(entry) + "\n")
+    elasticService.bulkUpload(ndjson).map(ignored =>
       elasticService.putPromotedListings(jsonArrayKeywordsById))
   }
 
@@ -58,7 +62,7 @@ class AmazonMappingService @Inject()(val elasticService: ElasticService)(implici
             else
               JsArray(values)
           }).toSeq
-        default ++ json.JsObject(("_id" -> JsNumber(id)) +: fields)
+        default ++ json.JsObject(("name" -> JsNumber(id)) +: fields)
       }))
   }
 }

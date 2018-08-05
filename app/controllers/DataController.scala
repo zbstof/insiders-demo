@@ -42,7 +42,7 @@ class DataController @Inject()(val cc: ControllerComponents,
           .as[JsArray]
           .value
           .map(e => {
-            val name: JsValue = e \ "_source" \ "firstname" get
+            val name: JsValue = e \ "_source" \ "Title" get
 
             JsObject(Seq("name" -> name))
           })
