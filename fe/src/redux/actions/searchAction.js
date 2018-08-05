@@ -13,7 +13,7 @@ export const searchAsync = value => {
     dispatch({ type: SEARCH_REQUESTED })
 
     return searchRequest(value)
-      .then(resp => {console.log(resp)
+      .then(resp => {
         return dispatch({ type: SEARCH_RESPONSE, payload: resp.data })
       })
       .catch(err => {
