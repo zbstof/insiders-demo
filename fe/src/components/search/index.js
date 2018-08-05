@@ -2,50 +2,47 @@ import React from 'react'
 import {
   ControlLabel,
   FormControl,
-  FormGroup,
-  HelpBlock
+  FormGroup, Glyphicon,
+  HelpBlock, InputGroup
 } from 'react-bootstrap'
-import searchRequest from '../../api/searchRequest'
+import RenderList from './RenderList'
 
 class Search extends React.Component {
   constructor(params) {
     super(params)
-
     this.handleChange = this.handleChange.bind(this)
     this.state = {
       value: ''
+      // FIXME: remove this and add logic statement
     }
-  }
-  getValidationState() {
-    const length = this.state.value.length
-    if (length > 10) return 'success'
-    else if (length > 5) return 'warning'
-    else if (length > 0) return 'error'
-    return null
   }
 
   handleChange(e) {
     this.setState({ value: e.target.value })
-    searchRequest(e.target.value)
+    this.props.searchAsynс(e.target.value)
   }
 
   render() {
     return (
-      <form>
-        <FormGroup
-          controlId="formBasicText"
-          validationState={this.getValidationState()}>
-          <ControlLabel>Working example with validation</ControlLabel>
-          <FormControl
-            type="text"
-            value={this.state.value}
-            placeholder="Enter text"
-            onChange={this.handleChange}
-          />
+      <div>
+        <FormGroup controlId="formBasicText">
+          <ControlLabel>Search bar</ControlLabel>
+          <InputGroup>
+            <FormControl type="text"
+                         value={this.state.value}
+                         placeholder="Enter text"
+                         onChange={this.handleChange} />
+            <InputGroup.Addon>
+              <Glyphicon glyph="search" />
+            </InputGroup.Addon>
+          </InputGroup>
           <FormControl.Feedback />
-          <HelpBlock>Validation is based on string length.</HelpBlock>
+          <HelpBlock>
+            Enter search to see, how suggestions will change
+          </HelpBlock>
         </FormGroup>
-      </form>
+        <RenderList data={this.props.searchResult} />
+      </div>
     )
   }
 }

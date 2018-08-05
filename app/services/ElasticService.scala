@@ -47,7 +47,8 @@ class ElasticService @Inject()(val ws: WSClient, val boostings: BoostingService)
            |{
            |  "query": {
            |    "multi_match" : {
-           |      "query": "$queryPattern"
+           |      "query": "$queryPattern",
+           |      "fuzziness": "AUTO"
            |    }
            |  }
            |}
