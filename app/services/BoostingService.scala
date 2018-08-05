@@ -11,8 +11,6 @@ class BoostingService @Inject()(val elasticService: ElasticService) {
   private val boostingsFileName = "boostings.txt"
   private var keywordsByIds = scala.collection.mutable.Map[Int, mutable.Set[String]]()
 
-  def currentBoostings: mutable.Map[Int, mutable.Set[String]] = keywordsByIds
-
   val linesIterator: Iterator[String] = Source.fromFile(boostingsFileName).getLines
 
   for (l <- linesIterator) {

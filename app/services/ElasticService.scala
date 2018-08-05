@@ -5,16 +5,14 @@ import java.nio.charset.StandardCharsets
 import akka.util.ByteString
 import javax.inject.{Inject, Singleton}
 import play.api.http.HttpVerbs
-import play.api.libs.json.Json.toJson
 import play.api.libs.json._
 import play.api.libs.ws.ahc.AhcCurlRequestLogger
 import play.api.libs.ws.{InMemoryBody, WSClient, WSResponse}
 
-import scala.collection.mutable
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class ElasticService @Inject()(val ws: WSClient/*, val boostings: BoostingService*/)(implicit val ec: ExecutionContext) {
+class ElasticService @Inject()(val ws: WSClient)(implicit val ec: ExecutionContext) {
 
   // we are using one mapping and data type per instance of app
   private val esDocRoot: String = "http://localhost:9200/data/_doc"
@@ -27,10 +25,6 @@ class ElasticService @Inject()(val ws: WSClient/*, val boostings: BoostingServic
       .map(transformMappingToSimpleSchema)
   }
 
-//  def getBoostings: JsValue = {
-//    toJson(boostings.currentBoostings)
-//  }
-
   private def transformMappingToSimpleSchema(res: WSResponse) = {
     def getFieldType(value: JsValue): JsValue = (value \ "type").get.as[JsValue]
 
@@ -42,11 +36,12 @@ class ElasticService @Inject()(val ws: WSClient/*, val boostings: BoostingServic
   }
 
   def search(queryPattern: String): Future[WSResponse] = {
-//    val groupingField = """category"""
-    val groupingField = """city"""
-//    var fields = Map("title" -> 5, "brand" -> 4, "binding" -> 3, "color" -> 2, "features" -> 1)
+    //    val groupingField = """category"""
+    val groupingField =
+      """city"""
+    //    var fields = Map("title" -> 5, "brand" -> 4, "binding" -> 3, "color" -> 2, "features" -> 1)
     var fields = Map("firstname" -> 5, "employer" -> 1)
-      .map{ case (k, v) => "\"" + k + "^" + v + "\""}
+      .map { case (k, v) => "\"" + k + "^" + v + "\"" }
       .mkString("[", ", ", "]")
 
     ws.url(s"$esDocRoot/_search")
