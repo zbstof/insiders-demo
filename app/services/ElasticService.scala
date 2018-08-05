@@ -17,6 +17,7 @@ class ElasticService @Inject()(val ws: WSClient)(implicit val ec: ExecutionConte
 
   // we are using one mapping and data type per instance of app
   private val esDocRoot: String = "http://localhost:9200/data/_doc"
+  private val esDocRoot2: String = "http://localhost:9200/bank/account"
 
   def getSchema: Future[JsValue] = {
     ws.url(s"$esDocRoot/_mapping")
@@ -36,7 +37,14 @@ class ElasticService @Inject()(val ws: WSClient)(implicit val ec: ExecutionConte
   }
 
   def search(queryPattern: String): Future[WSResponse] = {
-    ws.url(s"$esDocRoot/_search")
+//    val groupingField = """category"""
+    val groupingField = """city"""
+//    var fields = Map("title" -> 5, "brand" -> 4, "binding" -> 3, "color" -> 2, "features" -> 1)
+    var fields = Map("firstname" -> 5, "employer" -> 1)
+      .map{ case (k, v) => "\"" + k + "^" + v + "\""}
+      .mkString("[", ", ", "]")
+
+    ws.url(s"$esDocRoot2/_search")
       .withMethod(HttpVerbs.GET)
       .withBody(Json.parse(
         s"""
@@ -44,7 +52,15 @@ class ElasticService @Inject()(val ws: WSClient)(implicit val ec: ExecutionConte
            |  "query": {
            |    "multi_match" : {
            |      "query": "$queryPattern",
+           |      "fields": $fields,
            |      "fuzziness": "AUTO"
+           |    }
+           |  },
+           |  "aggs": {
+           |    "by_$groupingField" : {
+           |      "terms" : {
+           |        "field" : "$groupingField.keyword"
+           |      }
            |    }
            |  }
            |}
