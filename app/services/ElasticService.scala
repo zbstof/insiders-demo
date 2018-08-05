@@ -82,7 +82,7 @@ class ElasticService @Inject()(val ws: WSClient)(implicit val ec: ExecutionConte
   }
 
   def putPromotedListings(keywordsByIds: scala.collection.mutable.Map[Int, JsValue]): Unit = {
-    def addPromotedListingsESField = {
+    def addPromotedListingsESField() = {
       ws.url(esMappingRoot)
         .withMethod(HttpVerbs.PUT)
         .withBody(Json.parse(
@@ -98,7 +98,7 @@ class ElasticService @Inject()(val ws: WSClient)(implicit val ec: ExecutionConte
         .execute()
     }
 
-    addPromotedListingsESField
+    addPromotedListingsESField()
 
     for ((k, v) <- keywordsByIds) {
       ws.url(s"$esDocRoot/" + k + "/_update")
