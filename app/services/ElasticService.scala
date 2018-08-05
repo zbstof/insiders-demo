@@ -17,7 +17,6 @@ class ElasticService @Inject()(val ws: WSClient, val boostings: BoostingService)
 
   // we are using one mapping and data type per instance of app
   private val esDocRoot: String = "http://localhost:9200/data/_doc"
-  private val esDocRoot2: String = "http://localhost:9200/bank/account"
 
   def getSchema: Future[JsValue] = {
     ws.url(s"$esDocRoot/_mapping")
@@ -48,7 +47,7 @@ class ElasticService @Inject()(val ws: WSClient, val boostings: BoostingService)
       .map{ case (k, v) => "\"" + k + "^" + v + "\""}
       .mkString("[", ", ", "]")
 
-    ws.url(s"$esDocRoot2/_search")
+    ws.url(s"$esDocRoot/_search")
       .withMethod(HttpVerbs.GET)
       .withBody(Json.parse(
         s"""
