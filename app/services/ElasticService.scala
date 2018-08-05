@@ -4,8 +4,8 @@ import java.nio.charset.StandardCharsets
 
 import akka.util.ByteString
 import javax.inject.{Inject, Singleton}
-
 import play.api.http.HttpVerbs
+import play.api.libs.json.Json.toJson
 import play.api.libs.json._
 import play.api.libs.ws.ahc.AhcCurlRequestLogger
 import play.api.libs.ws.{InMemoryBody, WSClient, WSResponse}
@@ -13,7 +13,7 @@ import play.api.libs.ws.{InMemoryBody, WSClient, WSResponse}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class ElasticService @Inject()(val ws: WSClient)(implicit val ec: ExecutionContext) {
+class ElasticService @Inject()(val ws: WSClient, val boostings: BoostingService)(implicit val ec: ExecutionContext) {
 
   // we are using one mapping and data type per instance of app
   private val esDocRoot: String = "http://localhost:9200/data/_doc"
@@ -24,6 +24,10 @@ class ElasticService @Inject()(val ws: WSClient)(implicit val ec: ExecutionConte
       .withMethod(HttpVerbs.GET)
       .execute()
       .map(transformMappingToSimpleSchema)
+  }
+
+  def getBoostings: JsValue = {
+    toJson(boostings.currentBoostings)
   }
 
   private def transformMappingToSimpleSchema(res: WSResponse) = {
