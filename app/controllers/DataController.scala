@@ -57,14 +57,4 @@ class DataController @Inject()(val cc: ControllerComponents,
   def schema: Action[AnyContent] = Action.async {
     elastic.getSchema.map((res: JsValue) => Ok(res))
   }
-
-  def bulkUpload: Action[AnyContent] = Action.async { implicit request: Request[AnyContent] =>
-    val body: AnyContent = request.body
-    val entries: IndexedSeq[JsValue] = body.asJson.map((data: JsValue) => data.asInstanceOf[JsArray].value).getOrElse(
-      throw new IllegalArgumentException("Body: " + body)
-    )
-
-    elastic.bulkUpload(entries)
-      .map((response: WSResponse) => Status(response.status)(Json.parse(response.body)))
-  }
 }
