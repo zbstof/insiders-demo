@@ -1,6 +1,5 @@
 import com.google.inject.AbstractModule
-
-import services.BoostingService
+import services.{AmazonMappingService, BoostingService}
 
 /**
   * This class is a Guice module that tells Guice how to bind several
@@ -18,5 +17,6 @@ class Module extends AbstractModule {
     // Ask Guice to create an instance of ApplicationTimer when the
     // application starts.
     bind(classOf[BoostingService]).asEagerSingleton()
+//    bind(classOf[AmazonMappingService]).asEagerSingleton()
   }
 }
