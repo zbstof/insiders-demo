@@ -1,5 +1,5 @@
 import React from 'react'
-import { ListGroup } from 'react-bootstrap'
+import { Glyphicon, ListGroup } from 'react-bootstrap'
 import isNil from 'lodash/isNil'
 import { categoryListItem, regularListItem } from './Item'
 import { KEY } from '../../constants'
@@ -12,13 +12,20 @@ const RenderList = props => {
   }
   if (list.categories.length < 1 && list.items.length < 1)
     return (
-      <p>
-        Your search has no results. Probably, we will make this page looks
-        better
-      </p>
+      <div className="container">
+        <p>
+          Your search has no results. Probably, we will make this page looks
+          better <Glyphicon glyph="search" />
+        </p>
+      </div>
     )
 
-  if (list.items.length < 1) return <p>Looks like, there is no items</p>
+  if (list.items.length < 1)
+    return (
+      <div className="container">
+        <p>Looks like, there is no items</p>
+      </div>
+    )
 
   return (
     <ListGroup id={'render-list'}>
