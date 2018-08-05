@@ -4,8 +4,12 @@ import org.specs2.matcher.ShouldMatchers
 import play.api.libs.json.Json
 import play.api.test.PlaySpecification
 import services.AmazonMappingService
+import org.mockito.Mockito._
+import org.scalatest._
+import org.scalatest.mockito.MockitoSugar
+import org.scalatestplus.play._
 
-class MappingTest extends PlaySpecification with ShouldMatchers {
+class MappingTest extends PlaySpecification with ShouldMatchers with MockitoSugar {
   sequential
 
   val input =
