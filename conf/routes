@@ -1,4 +1,4 @@
 GET  /search  controllers.DataController.search
 POST  /upload  controllers.DataController.bulkUpload
 GET  /schema  controllers.DataController.schema
-GET  /boostings  controllers.DataController.boostings
+#GET  /boostings  controllers.DataController.boostings

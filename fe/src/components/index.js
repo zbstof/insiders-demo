@@ -1,9 +1,9 @@
 import React from 'react'
 import { Route } from 'react-router-dom'
-import SweetHome from './sweetHome'
+import SweetHome from './route-home'
 import { Grid, Row } from 'react-bootstrap'
 import NavigationBar from './NavigationBar'
-import About from './About'
+import About from './route-about'
 
 // TODO: #5 add about page
 const App = () => (
