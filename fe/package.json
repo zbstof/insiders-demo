@@ -3,7 +3,7 @@
   "homepage": "https://create-react-app-redux.now.sh",
   "scripts": {
     "deploy": "now && now alias",
-    "start": "PORT=3666 react-scripts start",
+    "start": "react-scripts start",
     "now-start": "serve -s ./build",
     "build": "react-scripts build",
     "test": "react-scripts test --env=jsdom",
@@ -28,7 +28,8 @@
     "redux": "4.0.0",
     "redux-thunk": "2.3.0",
     "sanitize.css": "6.0.0",
-    "serve": "9.4.0"
+    "serve": "9.4.0",
+    "uuid": "^3.3.2"
   },
-  "proxy": "http://localhost:9000/"
+  "proxy": "http://10.51.160.172:9000/"
 }

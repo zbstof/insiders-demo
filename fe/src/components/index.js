@@ -1,26 +1,19 @@
 import React from 'react'
-import { Route, Link } from 'react-router-dom'
-import Home from './home/index'
-import Search from './customSearch'
-import Upload from './upload'
+import { Route } from 'react-router-dom'
 import SweetHome from './sweetHome'
+import { Grid, Row } from 'react-bootstrap'
+import NavigationBar from './NavigationBar'
+import About from './About'
 
+// TODO: #5 add about page
 const App = () => (
-  <div>
-    <header>
-      <Link to="/">Intro</Link>{' | '}
-      <Link to="/home">Home</Link>{' | '}
-      <Link to="/search">Search</Link>{' | '}
-      <Link to="/uploadfile">Search</Link>
-    </header>
-
-    <main>
+  <Grid>
+    <Row>
+    <NavigationBar/>
+    </Row>
       <Route exact path="" component={SweetHome} />
-      <Route exact path="/home" component={Home} />
-      <Route exact path="/search" component={Search} />
-      <Route exact path="/uploadfile" component={Upload} />
-    </main>
-  </div>
+      <Route exact path="/about" component={About} />
+  </Grid>
 )
 
 export default App

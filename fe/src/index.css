@@ -14,3 +14,20 @@ body {
 button:disabled {
   opacity: 0.5;
 }
+
+.content {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.left-side {
+  float: left;
+  width: 50%;
+}
+
+/*TODO: fix right side alignment #7*/
+.right-side {
+  float: right;
+  width: 50%;
+}
