@@ -1,19 +1,17 @@
 package controllers
 
 import javax.inject.{Inject, Singleton}
-import play.api.libs.Files
 import play.api.libs.json._
 import play.api.libs.ws.WSResponse
-import play.api.libs.{Files, json}
 import play.api.mvc._
-import services.Control._
 import services.{AmazonMappingService, ElasticService}
 
 import scala.concurrent.ExecutionContext
 
 @Singleton
 class DataController @Inject()(val cc: ControllerComponents,
-                               val elastic: ElasticService)(implicit val ec: ExecutionContext) extends AbstractController(cc) {
+                               val elastic: ElasticService,
+                               val mappingService: AmazonMappingService)(implicit val ec: ExecutionContext) extends AbstractController(cc) {
 
   def search: Action[AnyContent] = Action.async { implicit request: Request[AnyContent] =>
     val queryPattern: String = request.getQueryString("pattern") match {

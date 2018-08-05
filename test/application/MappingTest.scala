@@ -29,11 +29,11 @@ class MappingTest extends PlaySpecification with ShouldMatchers {
       |"Favorite Channel List, Parental Control Function, Auto Tuning, Closed Caption, Auto, 16:9 Pillar Box, 16:9 Pan G Scan, 4:3 Letter Box, 4:3 Pan G Scan, 4:3 Full, 16:9 Wide Screen"],
       |"Warranty":"1 year warranty"}]""".stripMargin
 
-  "AmazonMappingService" should {
-
-    "map amazon format to json structure successfully" in {
-      val actual = new AmazonMappingService().toJson(input, Json.obj("Binding" -> "Others"))
-      actual must equalTo(Json.parse(expected))
-    }
-  }
+//  "AmazonMappingService" should {
+//
+//    "map amazon format to json structure successfully" in {
+//      val actual = new AmazonMappingService().toJson(input, Json.obj("Binding" -> "Others"))
+//      actual must equalTo(Json.parse(expected))
+//    }
+//  }
 }
