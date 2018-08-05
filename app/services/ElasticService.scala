@@ -43,7 +43,8 @@ class ElasticService @Inject()(val ws: WSClient)(implicit val ec: ExecutionConte
            |{
            |  "query": {
            |    "multi_match" : {
-           |      "query": "$queryPattern"
+           |      "query": "$queryPattern",
+           |      "fuzziness": "AUTO"
            |    }
            |  }
            |}
