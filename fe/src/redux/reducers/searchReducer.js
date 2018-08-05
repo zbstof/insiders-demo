@@ -16,6 +16,7 @@ export default (state = initialState, action) => {
     case SEARCH_IDLE:
       return {
         ...state,
+        searchInput: initialState.searchInput,
         isLoading: false
       }
     case SEARCH_RESPONSE:

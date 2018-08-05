@@ -37,9 +37,6 @@ class Search extends React.Component {
             </InputGroup.Addon>
           </InputGroup>
           <FormControl.Feedback />
-          <HelpBlock>
-            Enter search to see, how suggestions will change
-          </HelpBlock>
         </FormGroup>
         <RenderList data={this.props.searchResult} />
       </div>
