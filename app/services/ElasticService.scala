@@ -16,6 +16,7 @@ class ElasticService @Inject()(val ws: WSClient)(implicit val ec: ExecutionConte
 
   // we are using one mapping and data type per instance of app
   private val esDocRoot: String = "http://localhost:9200/data/_doc"
+  private val esMappingRoot: String = "http://localhost:9200/data/_mapping/_doc"
 
   def getSchema: Future[JsValue] = {
     ws.url(s"$esDocRoot/_mapping")
@@ -37,6 +38,7 @@ class ElasticService @Inject()(val ws: WSClient)(implicit val ec: ExecutionConte
   def search(queryPattern: String): Future[WSResponse] = {
         val groupingField = """Binding"""
         var fields = Map("Title" -> 5, "Brand" -> 4, "Binding" -> 3, "Color" -> 1, "Feature" -> 1)
+//    var fields = Map("firstname" -> 5, "employer" -> 1)
       .map { case (k, v) => "\"" + k + "^" + v + "\"" }
       .mkString("[", ", ", "]")
 
@@ -79,7 +81,7 @@ class ElasticService @Inject()(val ws: WSClient)(implicit val ec: ExecutionConte
 
   def putPromotedListings(keywordsByIds: scala.collection.mutable.Map[Int, JsValue]): Unit = {
     def addPromotedListingsESField() = {
-      ws.url(esDocRoot)
+      ws.url(esMappingRoot)
         .withMethod(HttpVerbs.PUT)
         .withBody(Json.parse(
           s"""
